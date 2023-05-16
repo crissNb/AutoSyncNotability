@@ -1,0 +1,237 @@
+GLKeyedArchiver.$class (79 (2), 91, 104, 117, 130, 143, 156, 169 (8)) => 91 + 13x for page size bigger/equal than 3.
+GLKeyedArchiver.NBNoteTakingSessionDocumentPaperLayoutModelKey = GLKeyedArchiver.creationDate + 2
+GLKeyedArchiver.NBNoteTakingSessionBundleVersionNumberKey = $class - 5
+GLKeyedArchiver.NBNoteTakingSessionHandwritingLanguageKey = $class - 4
+
+GLKeyedArchiver.contentPlaybackEventManager = $class - 3
+GLKeyedArchiver.creationDate = (54, 60, 67, 74, ... , 123 (11)) => 67 + 7x for page size bigger than 3.
+GLKeyedArchiver.kNBNoteTakingSessionNoteLinkStoreKey = $class - 1
+GLKeyedArchiver.name = GLKeyedArchiver.creationDate - 1
+GLKeyedArchiver.packagePath = GLKeyedArchiver.creationDate - 1
+GLKeyedArchiver.subject = $class - 6
+GLKeyedArchiver.tags = (47, 53, 60, 67, ... , 116) => 60 + 7x for page size bigger/equal than 3.
+
+
+GLKeyedArchiver.class2 = (52, 58, 65, 72, ... , 121) => 65 + 7x for page size bigger/equal than 3.
+GLKeyedArchiver.Handwriting Overlay = GLKeyedArchiver.class2 - 24
+GLKeyedArchiver.NBAttributedBackingString = GLKeyedArchiver.class2 - 17
+GLKeyedArchiver.attributedString = GLKeyedArchiver.class2 - 6
+GLKeyedArchiver.mediaObjects = GLKeyedArchiver.class2 - 25
+GLKeyedArchiver.recordingTimestampString = GLKeyedArchiver.class2 - 3
+GLKeyedArchiver.reflowState = GLKeyedArchiver.class2 - 18
+
+
+PDF (UNDER PDFFile):
+class = GLKeyedArchiver.class2 - 29
+
+NS.objects increment (pages):
+(13, 23, 29, 36, 43, 50, 57, 64, 71, 78, 85, 92, 99, 106, 113, 120, 127, 134, 141, 148, 155, 162, 169 ...) => 29 + 7x for page size bigger than 3.
+
+individual page definitions 1:
+================
+NS.keys (array):
+[19, 24, 25, 26, 27, 28] (page 1)
+[19, 30, 31, 32, 33, 34]
+[19, 37, 38, 39, 40, 41]
+[19, 44, 45, 46, 47, 48] (page 4)
+[19, 51, 52, 53, 54, 55]
+[19, 58, 59, 60, 61, 62]
+...
+[19, 233, 234, 235, 236, 237]
+=> [19, a, a + 1, a + 2, a + 3, a + 4] with a = a_{-1} + 3 for page size bigger than 3.
+
+NS.objects (array):
+[4, 5, 6, 6, 20, 21] (page 1)
+[4, 5, 20, 21, 35, 35]
+[4, 5, 20, 21, 42, 42]
+[4, 5, 20, 21, 49, 49]
+[4, 5, 20, 21, 56, 56]
+[4, 5, 20, 21, 63, 63]
+...
+[4, 5, 20, 21, 238, 238]
+=> [4, 5, 20, 21, a, a] with a = 42 + 7x for page size bigger than 3.
+
+The last page doesn't include anything apart from
+<string>kPageLayoutPageIsBookmarkedKey</string>
+
+<string>kPageLayoutDocumentPageNumberKey</string>
+<string>kPageLayoutPDFFileNameKey</string>
+<string>kPageLayoutPDFPageNumberKey</string>
+<string>kPageLayoutPDFIsOriginalPageKey</string>
+<integer>a</integer>
+
+================
+
+
+----------------
+class3 = class2 - 26                   53, 242
+nativeLayoutDevicesStringKey = class3 - 1
+
+
+class4 = class3 + 8
+SpatialHash = class4 - 5
+
+class5 = class3 + 7
+bezierPathsDataDictionary = class5 - 3
+groupsArrays = class3 + 6
+numcurves = class3 + 5
+numfractionalwidths = class3 + 5
+numpoints = class3 + 5
+
+------------
+
+class6 = class3 - 3
+
+----------
+
+$classes contains array of HandwritingObject and NSObject
+for HandwritingObject:
+class_HWO = class3 + 19
+NBAttributedBackingStringCodingKey = class3 + 10
+NBAttributedLayoutStringCodingKey = class3 + 16
+
+for NSObject:
+class_NSO = constant 22.
+NS.Keys contain the following:
+class3 + 11
+class3 + 12
+NS.objects contain the following:
+class3 + 13
+class3 + 15
+
+
+-------------------
+
+
+stringKey
+class_sK = class3 + 14
+
+
+-------------
+
+$classes contain an array of NSMutableString, NSString, NSObject
+
+for NSMutableString:
+class_MS = class3 - 3
+
+for NSString:
+NS.keys contain the following:
+class3 + 11
+class3 + 12
+
+class3 + 17
+class3 + 18
+
+for NSObject: (NS.bytes)
+class_id = class3 + 14
+
+for NSObject: (NS.objects)
+class_id = class3 - 3
+
+----------------------
+
+$classes contain an array of NBAttributedString, NSObject
+
+for NSAttributedString:
+NS.keys contain the following:
+class3 + 11
+class3 + 12
+
+NS.objects contain the following:
+class3 + 21
+class3 + 22
+
+for NSObject (NS.objects):
+class_id = class3 - 3
+
+idk what this is:
+class_idk = 22 constant
+contains NS.keys:
+class3 + 11
+class3 + 12
+
+contains NS.objects
+class3 + 24
+class3 + 25
+
+
+
+NS.bytes
+class_bytes = class3 + 14
+
+NS.objects
+class_objects = class3 - 3
+
+
+worksheetbase_MODIFIED (or the name of the note) NS.time
+class_time = GLKeyedArchiver.creationDate + 1
+
+
+------ creationdate: 81, 271
+
+class7 = GLKeyedArchiver.$class - 7
+documentPaperAttributes = GLKeyedArchiver.creationDate + 3
+pageLayoutArray = GLKeyedArchiver.creationDate + 10
+
+
+class8 = GLKeyedArchiver.creationDate + 9
+lineStyle2 = GLKeyedArchiver.creationDate + 4
+paperIdentifier = GLKeyedArchiver.creationDate + 5
+paperOrientation = GLKeyedArchiver.creationDate + 7
+paperSize = GLKeyedArchiver.creationDate + 6
+paperSizingBehavior = GLKeyedArchiver.creationDate + 8
+
+
+PAPERATTRIBUTES
+STARTS WITH: GLKeyedArchiver.creationDate + 11 := a
+then contains following elements:
+a
+a + 7
+a + 13
+a + 19
+a + 25
+=> a = GLKeyedArchiver.creationDate + 11 + 7 for the second element,
+                                         + 6x for the rest. (WHERE X IS PAGE COUNT)
+
+NS.Object under paperattributes contains
+class_NSO = GLKeyedArchiver.creationDate + 17
+
+NS.keys contain the following:
+GLKeyedArchiver.creationDate + 12
+GLKeyedArchiver.creationDate + 13
+GLKeyedArchiver.creationDate + 14
+GLKeyedArchiver.creationDate + 15
+GLKeyedArchiver.creationDate + 16
+
+
+
+individual page definitions 2:
+================
+each contains:
+class_id = GLKeyedArchiver.creationDate + 17
+
+then the FIRST, NS.keys containing:
+class_id + 2
+class_id + 3
+class_id + 4
+class_id + 5
+class_id + 6
+
+the OTHER NS.keys contain:
+largest_last_class_id + 2
+largest_last_class_id + 3
+largest_last_class_id + 4
+largest_last_class_id + 5
+largest_last_class_id + 6
+
+NS.objects have constant
+[5, 6, 6, 20, 21] (first page)
+[5, 20, 21, 35, 35]
+[5, 20, 21, 42, 42]
+[5, 20, 21, 49, 49]
+[5, 20, 21, 56, 56]
+[5, 20, 21, 63, 63]
+=> [5, 20, 21, a, a] with a = 42 + 7x for page size bigger than 3.
+
+
+NBCPEventmanager has a class with key:
