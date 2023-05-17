@@ -2,7 +2,7 @@ import os
 import shutil
 import PyPDF2
 from distutils.dir_util import copy_tree
-import FoundationPlist
+import plistlib
 
 class PDFConverter:
     def __init__(self, pdf_file_path, reference_path):
@@ -27,8 +27,6 @@ class PDFConverter:
 
     def updatePlist(self, page_count):
         plist_file_path = os.path.join('converted', 'Session.plist')
-
-        plist = FoundationPlist.readPlist(plist_file_path)
 
 
         # modify values
