@@ -1,5 +1,5 @@
 import sys
-from pdfconverter import PDFConverter
+from src.pdfconverter import PDFConverter
 
 pdf_file_path = sys.argv[1]
 reference_path = sys.argv[2]

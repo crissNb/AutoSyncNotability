@@ -1,4 +1,4 @@
-GLKeyedArchiver.$class (79 (2), 91, 104, 117, 130, 143, 156, 169 (8)) => 91 + 13x for page size bigger/equal than 3.
+GLKeyedArchiver.$class (80 (2), 91, 104, 117, 130, 143, 156, 169 (8)) => 91 + 13x for page size bigger/equal than 3.
 GLKeyedArchiver.NBNoteTakingSessionDocumentPaperLayoutModelKey = GLKeyedArchiver.creationDate + 2
 GLKeyedArchiver.NBNoteTakingSessionBundleVersionNumberKey = $class - 5
 GLKeyedArchiver.NBNoteTakingSessionHandwritingLanguageKey = $class - 4
@@ -18,7 +18,7 @@ GLKeyedArchiver.NBAttributedBackingString = GLKeyedArchiver.class2 - 17
 GLKeyedArchiver.attributedString = GLKeyedArchiver.class2 - 6
 GLKeyedArchiver.mediaObjects = GLKeyedArchiver.class2 - 25
 GLKeyedArchiver.recordingTimestampString = GLKeyedArchiver.class2 - 3
-GLKeyedArchiver.reflowState = GLKeyedArchiver.class2 - 18
+GLKeyedArchiver.reflowState = GLKeyedArchiver.class2 - 28
 
 
 PDF (UNDER PDFFile):
