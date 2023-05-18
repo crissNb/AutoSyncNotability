@@ -2,6 +2,7 @@ import sys
 import re
 from src.pdfconverter import PDFConverter
 from src.configreader import ConfigReader
+from src.syncer import Syncer
 from pathlib import Path
 
 pdf_file_path = sys.argv[1]
@@ -13,6 +14,10 @@ config = ConfigReader().load_config()
 
 # loop through config and check if pdf_file_name matches regex_match
 for section in config:
+    # skip auth section
+    if section == 'AUTH':
+        continue
+
     if re.match(config[section]['regex_match'], pdf_file_name):
         # pdf_file_name matches regex_match
         if not Path(config[section]['reference_path']).expanduser().is_file():
@@ -26,4 +31,11 @@ for section in config:
         if not Path('converted').is_file():
             print("PDFConverter failed to convert!")
             break
+
+        # rename converted file to pdf_file_name + ".nbn"
+        converted_file_name = pdf_file_name + ".nbn"
+        Path('converted').rename(converted_file_name)
+        
+        # sync converted file
+        syncer = Syncer(config['AUTH']['id'], converted_file_name, config['AUTH']['destination_name']).sync(changed)
         break

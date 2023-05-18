@@ -3,13 +3,17 @@ from pathlib import Path
 
 class ConfigReader:
     def load_config(self) -> configparser.ConfigParser:
-        parser = configparser.ConfigParser()
+        config = configparser.ConfigParser()
 
         # check if config file exists and then load
         if not Path("~/.config/AutoSyncNotability/config.ini").expanduser().is_file():
             print("Config file not found. Creating one...")
             # create config file
-            parser['DEFAULT'] = {
+            config['AUTH'] = {
+                'id': '',
+                'destination_name': ''
+            }
+            config['DEFAULT'] = {
                 'regex_match': '',
                 'reference_path': '',
             }
@@ -18,7 +22,7 @@ class ConfigReader:
             Path("~/.config/AutoSyncNotability").expanduser().mkdir(parents=True, exist_ok=True)
 
             with open(Path("~/.config/AutoSyncNotability/config.ini").expanduser(), 'w') as configfile:
-                parser.write(configfile)
+                config.write(configfile)
 
-        parser.read(Path("~/.config/AutoSyncNotability/config.ini").expanduser())
-        return parser
+        config.read(Path("~/.config/AutoSyncNotability/config.ini").expanduser())
+        return config
