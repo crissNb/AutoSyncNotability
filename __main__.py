@@ -20,7 +20,7 @@ for section in config:
 
     if re.match(config[section]['regex_match'], pdf_file_name):
         # pdf_file_name matches regex_match
-        if not Path(config[section]['reference_path']).expanduser().is_file():
+        if not Path(config[section]['reference_path']).expanduser().is_dir():
             print("reference path for " + section + " is invalid!")
             break
 
@@ -28,12 +28,13 @@ for section in config:
         pdfconverter.convert()
 
         # check if pdfconverter converted by checking if the file exists
-        if not Path('converted').is_file():
+        if not Path('converted').is_dir():
             print("PDFConverter failed to convert!")
             break
 
         # rename converted file to pdf_file_name + ".nbn"
-        converted_file_name = pdf_file_name + ".nbn"
+        # remove pdf extension and add .nbn extension
+        converted_file_name = pdf_file_name.split('.')[0] + ".nbn"
         Path('converted').rename(converted_file_name)
         
         # sync converted file
