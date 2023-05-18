@@ -6,3 +6,6 @@ This project is a huge hard coded hack to automatically sync pdf files to notabi
 
 ## Usage
 forgot how to setup everything. you probably need (python) dependencies installed, good fucking luck. Probably do this in venv.
+
+## Docs
+see code.
