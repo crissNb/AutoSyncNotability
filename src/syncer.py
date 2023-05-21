@@ -1,75 +1,51 @@
 from icloudpy import ICloudPyService
 import sys
 import os
+import time
 
 class Syncer:
-    def __init__(self, auth_id, target_path, destination_name):
-        self.auth_id = auth_id
-        self.target_path = target_path
+    def __init__(self, drive, dump_folder, destination_name, target_path):
+        self.drive = drive
+        self.dump_folder = dump_folder
         self.destination_name = destination_name
+        self.target_path = target_path
 
     def sync(self, file_changed):
-        api = ICloudPyService(self.auth_id)
+        print("uploading: " + self.target_path)
+        self.drive[self.dump_folder].mkdir(self.target_path)
 
-        if api.requires_2fa:
-            print("Two-factor authentication required.")
-            code = input("Enter the code you received of one of your approved devices: ")
-            result = api.validate_2fa_code(code)
-            print("Code validation result: %s" % result)
+        self.upload_files(self.target_path)
+        print("uploading done")
 
-            if not result:
-                print("Failed to verify security code")
-                sys.exit(1)
+    def attempt_upload(self, target_file_location, destination_file_location):
+        print("UPLOADING IN " + target_file_location + " TO: " + destination_file_location)
+        # self.drive[self.dump_folder][self.target_path].update_data()
+        print(self.drive[self.dump_folder][self.target_path].get_children())
+        try:
+            with open(target_file_location, 'rb') as f:
+                if destination_file_location == self.target_path:
+                    self.drive[self.dump_folder][self.target_path].upload(f)
+                else:
+                    self.drive[self.dump_folder][self.target_path][destination_file_location].upload(f)
+        except Exception as e:
+            print(e)
+            print("upload failed, retrying...")
+            time.sleep(1)
+            self.attempt_upload(target_file_location, destination_file_location)
 
-            if not api.is_trusted_session:
-                print("Session is not trusted. Requesting trust...")
-                result = api.trust_session()
-                print("Session trust result %s" % result)
-
-                if not result:
-                    print("Failed to request trust. You will likely be prompted for the code again in the coming weeks")
-        elif api.requires_2sa:
-            import click
-            print("Two-step authentication required. Your trusted devices are:")
-
-            devices = api.trusted_devices
-            for i, device in enumerate(devices):
-                print("  %s: %s" % (i, device.get('deviceName',
-                    "SMS to %s" % device.get('phoneNumber'))))
-
-            device = click.prompt('Which device would you like to use?', default=0)
-            device = devices[device]
-            if not api.send_verification_code(device):
-                print ("Failed to send verification code")
-                sys.exit(1)
-
-            code = click.prompt('Please enter validation code')
-            if not api.validate_verification_code(device, code):
-                print ("Failed to verify verification code")
-                sys.exit(1)
-
-        api.drive.params["clientId"] = api.client_id
-
-        notabilityNode = api.drive.get_app_node(self.destination_name)
-
-        if not notabilityNode:
-            print("Notability folder not found. Abort.")
-            return
-
-        print(self.target_path)
-
-        notabilityNode.mkdir(self.target_path)
-        self.upload_files(notabilityNode, self.target_path)
-
-    def upload_files(self, node, target_path):
-        # recursively go through target_path folder and upload files
+    def upload_files(self, target_path):
         for file in os.listdir(target_path):
+            print(file)
+            self.drive[self.dump_folder][self.target_path].get_children()
             if os.path.isdir(os.path.join(target_path, file)):
                 # file is a folder
-                # TODO: folder creation respecting the path
-                node.mkdir(file)
-                self.upload_files(node, os.path.join(target_path, file))
+                self.drive[self.dump_folder].mkdir(target_path + '/' + file)
+                self.upload_files(os.path.join(target_path, file))
             else:
                 # file is a file
-                with open(os.path.join(target_path, file), 'rb') as f:
-                    node.upload(f)
+                last_dir = target_path.split('/')[-1]
+                if last_dir == self.target_path:
+                    # last_dir is the same as target_path
+                    self.attempt_upload(os.path.join(target_path, file), target_path)
+                else:
+                    self.attempt_upload(os.path.join(target_path, file), last_dir)

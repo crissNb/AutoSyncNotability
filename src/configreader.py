@@ -11,7 +11,8 @@ class ConfigReader:
             # create config file
             config['AUTH'] = {
                 'id': '',
-                'destination_name': ''
+                'destination_name': '',
+                'dump_folder': ''
             }
             config['DEFAULT'] = {
                 'regex_match': '',
