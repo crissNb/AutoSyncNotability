@@ -88,6 +88,9 @@ class PDFConverter:
         for i in range((reference_page_count - page_count) * 7 + 1, 2, -1):
             plist['$objects'].pop(23)
 
+        with open(plist_file_path, 'wb') as f:
+            plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
+
         object_3_class = object_2_class - 26
         plist['$objects'][24]['$class'] = plistlib.UID(object_3_class)
         plist['$objects'][24]['nativeLayoutDeviceStringKey'] = plistlib.UID(object_3_class - 1)

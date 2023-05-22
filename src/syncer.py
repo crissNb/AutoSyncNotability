@@ -1,5 +1,4 @@
 from icloudpy import ICloudPyService
-import sys
 import os
 import time
 
@@ -14,13 +13,21 @@ class Syncer:
         print("uploading: " + self.target_path)
         self.drive[self.dump_folder].mkdir(self.target_path)
 
+        self.drive[self.dump_folder].dir()
+
+        # ensure the folders are created (cannot be done under recursion for 
+        # some reason
+        for file in os.listdir(self.target_path):
+            if os.path.isdir(os.path.join(self.target_path, file)):
+                self.drive[self.dump_folder].mkdir(self.target_path + '/' + file)
+
+        print(self.drive[self.dump_folder][self.target_path].dir())
+
         self.upload_files(self.target_path)
         print("uploading done")
 
     def attempt_upload(self, target_file_location, destination_file_location):
-        print("UPLOADING IN " + target_file_location + " TO: " + destination_file_location)
         # self.drive[self.dump_folder][self.target_path].update_data()
-        print(self.drive[self.dump_folder][self.target_path].get_children())
         try:
             with open(target_file_location, 'rb') as f:
                 if destination_file_location == self.target_path:
@@ -39,7 +46,6 @@ class Syncer:
             self.drive[self.dump_folder][self.target_path].get_children()
             if os.path.isdir(os.path.join(target_path, file)):
                 # file is a folder
-                self.drive[self.dump_folder].mkdir(target_path + '/' + file)
                 self.upload_files(os.path.join(target_path, file))
             else:
                 # file is a file
