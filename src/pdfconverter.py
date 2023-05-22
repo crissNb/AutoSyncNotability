@@ -44,6 +44,10 @@ class PDFConverter:
             object_1_class = 91 + 13 * (page_count - 2)
             creationDate = 60 + 7 * (page_count - 2)
             object_2_class = 58 + 7 * (page_count - 2)
+        elif page_count == 2:
+            object_1_class = 92
+            creationDate = 61
+            object_2_class = 58
         else:
             object_1_class = 80
             creationDate = 55
@@ -85,100 +89,128 @@ class PDFConverter:
             else:
                 plist['$objects'][12]['NS.objects'][i] = plistlib.UID(29 + ((i - 3) * 7))
 
-        for i in range((reference_page_count - page_count) * 7 + 1, 2, -1):
-            plist['$objects'].pop(23)
+        # individual page modifications
+        if page_count == 1:
+            deletion_cnt = 31 * 7 + 1
+            start_index = 24
+            for i in range(deletion_cnt, 2, -1):
+                plist['$objects'].pop(23)
+
+        elif page_count == 2:
+            deletion_cnt = (reference_page_count - page_count) * 7 + 1
+            start_index = 30
+
+            for i in range(2, deletion_cnt, 1):
+                plist['$objects'].pop((28+ deletion_cnt) - i)
+
+            plist['$objects'].pop(29)
+        else:
+            deletion_cnt = (reference_page_count - page_count) * 7 + 1
+            start_index = 37
+
+            for i in range(2, deletion_cnt, 1):
+                plist['$objects'].pop((36 + deletion_cnt) - i)
+            plist['$objects'].pop(36)
 
         with open(plist_file_path, 'wb') as f:
             plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
 
         object_3_class = object_2_class - 26
-        plist['$objects'][24]['$class'] = plistlib.UID(object_3_class)
-        plist['$objects'][24]['nativeLayoutDeviceStringKey'] = plistlib.UID(object_3_class - 1)
+        plist['$objects'][start_index]['$class'] = plistlib.UID(object_3_class)
+        plist['$objects'][start_index]['nativeLayoutDeviceStringKey'] = plistlib.UID(object_3_class - 1)
 
-        plist['$objects'][28]['$class'] = plistlib.UID(object_3_class + 8)
-        plist['$objects'][28]['SpatialHash'] = plistlib.UID(object_3_class + 3)
+        plist['$objects'][start_index + 4]['$class'] = plistlib.UID(object_3_class + 8)
+        plist['$objects'][start_index + 4]['SpatialHash'] = plistlib.UID(object_3_class + 3)
 
-        plist['$objects'][29]['$class'] = plistlib.UID(object_3_class + 7)
-        plist['$objects'][29]['bezierPathsDataDictionary'] = plistlib.UID(object_3_class + 4)
-        plist['$objects'][29]['groupsArrays'] = plistlib.UID(object_3_class + 6)
-        plist['$objects'][29]['numcurves'] = plistlib.UID(object_3_class + 5)
-        plist['$objects'][29]['numfractionalwidths'] = plistlib.UID(object_3_class + 5)
-        plist['$objects'][29]['numpoints'] = plistlib.UID(object_3_class + 5)
+        plist['$objects'][start_index + 5]['$class'] = plistlib.UID(object_3_class + 7)
+        plist['$objects'][start_index + 5]['bezierPathsDataDictionary'] = plistlib.UID(object_3_class + 4)
+        plist['$objects'][start_index + 5]['groupsArrays'] = plistlib.UID(object_3_class + 6)
+        plist['$objects'][start_index + 5]['numcurves'] = plistlib.UID(object_3_class + 5)
+        plist['$objects'][start_index + 5]['numfractionalwidths'] = plistlib.UID(object_3_class + 5)
+        plist['$objects'][start_index + 5]['numpoints'] = plistlib.UID(object_3_class + 5)
 
-        plist['$objects'][32]['$class'] = plistlib.UID(object_3_class - 3)
+        plist['$objects'][start_index + 8]['$class'] = plistlib.UID(object_3_class - 3)
 
-        plist['$objects'][35]['$class'] = plistlib.UID(object_3_class + 19)
-        plist['$objects'][35]['NBAttributedBackingStringCodingKey'] = plistlib.UID(object_3_class + 10)
-        plist['$objects'][35]['NBAttributedLayoutStringCodingKey'] = plistlib.UID(object_3_class + 16)
+        plist['$objects'][start_index + 11]['$class'] = plistlib.UID(object_3_class + 19)
+        plist['$objects'][start_index + 11]['NBAttributedBackingStringCodingKey'] = plistlib.UID(object_3_class + 10)
+        plist['$objects'][start_index + 11]['NBAttributedLayoutStringCodingKey'] = plistlib.UID(object_3_class + 16)
 
-        plist['$objects'][36]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
-        plist['$objects'][36]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
-        plist['$objects'][36]['NS.objects'][0] = plistlib.UID(object_3_class + 13)
-        plist['$objects'][36]['NS.objects'][1] = plistlib.UID(object_3_class + 15)
+        plist['$objects'][start_index + 12]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
+        plist['$objects'][start_index + 12]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
+        plist['$objects'][start_index + 12]['NS.objects'][0] = plistlib.UID(object_3_class + 13)
+        plist['$objects'][start_index + 12]['NS.objects'][1] = plistlib.UID(object_3_class + 15)
 
-        plist['$objects'][39]['$class'] = plistlib.UID(object_3_class + 14)
+        plist['$objects'][start_index + 15]['$class'] = plistlib.UID(object_3_class + 14)
 
-        plist['$objects'][41]['$class'] = plistlib.UID(object_3_class - 3)
+        plist['$objects'][start_index + 17]['$class'] = plistlib.UID(object_3_class - 3)
 
-        plist['$objects'][42]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
-        plist['$objects'][42]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
-        plist['$objects'][42]['NS.objects'][0] = plistlib.UID(object_3_class + 17)
-        plist['$objects'][42]['NS.objects'][1] = plistlib.UID(object_3_class + 18)
-        plist['$objects'][43]['$class'] = plistlib.UID(object_3_class + 14)
-        plist['$objects'][44]['$class'] = plistlib.UID(object_3_class - 3)
+        plist['$objects'][start_index + 18]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
+        plist['$objects'][start_index + 18]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
+        plist['$objects'][start_index + 18]['NS.objects'][0] = plistlib.UID(object_3_class + 17)
+        plist['$objects'][start_index + 18]['NS.objects'][1] = plistlib.UID(object_3_class + 18)
+        plist['$objects'][start_index + 19]['$class'] = plistlib.UID(object_3_class + 14)
+        plist['$objects'][start_index + 20]['$class'] = plistlib.UID(object_3_class - 3)
 
 
-        plist['$objects'][46]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
-        plist['$objects'][46]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
-        plist['$objects'][46]['NS.objects'][0] = plistlib.UID(object_3_class + 21)
-        plist['$objects'][46]['NS.objects'][1] = plistlib.UID(object_3_class + 22)
+        plist['$objects'][start_index + 22]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
+        plist['$objects'][start_index + 22]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
+        plist['$objects'][start_index + 22]['NS.objects'][0] = plistlib.UID(object_3_class + 21)
+        plist['$objects'][start_index + 22]['NS.objects'][1] = plistlib.UID(object_3_class + 22)
 
-        plist['$objects'][48]['$class'] = plistlib.UID(object_3_class - 3)
+        plist['$objects'][start_index + 24]['$class'] = plistlib.UID(object_3_class - 3)
 
-        plist['$objects'][49]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
-        plist['$objects'][49]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
-        plist['$objects'][49]['NS.objects'][0] = plistlib.UID(object_3_class + 24)
-        plist['$objects'][49]['NS.objects'][1] = plistlib.UID(object_3_class + 25)
+        plist['$objects'][start_index + 25]['NS.keys'][0] = plistlib.UID(object_3_class + 11)
+        plist['$objects'][start_index + 25]['NS.keys'][1] = plistlib.UID(object_3_class + 12)
+        plist['$objects'][start_index + 25]['NS.objects'][0] = plistlib.UID(object_3_class + 24)
+        plist['$objects'][start_index + 25]['NS.objects'][1] = plistlib.UID(object_3_class + 25)
 
-        plist['$objects'][50]['$class'] = plistlib.UID(object_3_class + 14)
-        plist['$objects'][51]['$class'] = plistlib.UID(object_3_class - 3)
+        plist['$objects'][start_index + 26]['$class'] = plistlib.UID(object_3_class + 14)
+        plist['$objects'][start_index + 27]['$class'] = plistlib.UID(object_3_class - 3)
 
-        plist['$objects'][55]['$class'] = plistlib.UID(creationDate + 1)
+        plist['$objects'][start_index + 31]['$class'] = plistlib.UID(creationDate + 1)
 
-        plist['$objects'][57]['$class'] = plistlib.UID(object_1_class - 7)
-        plist['$objects'][57]['documentPaperAttributes'] = plistlib.UID(creationDate + 3)
-        plist['$objects'][57]['pageLayoutArray'] = plistlib.UID(creationDate + 10)
+        plist['$objects'][start_index + 33]['$class'] = plistlib.UID(object_1_class - 7)
+        plist['$objects'][start_index + 33]['documentPaperAttributes'] = plistlib.UID(creationDate + 3)
+        plist['$objects'][start_index + 33]['pageLayoutArray'] = plistlib.UID(creationDate + 10)
 
-        plist['$objects'][58]['$class'] = plistlib.UID(creationDate + 9)
-        plist['$objects'][58]['lineStyle2'] = plistlib.UID(creationDate + 4)
-        plist['$objects'][58]['paperIdentifier'] = plistlib.UID(creationDate + 5)
-        plist['$objects'][58]['paperOrientation'] = plistlib.UID(creationDate + 7)
-        plist['$objects'][58]['paperSize'] = plistlib.UID(creationDate + 6)
-        plist['$objects'][58]['paperSizingBehavior'] = plistlib.UID(creationDate + 8)
+        plist['$objects'][start_index + 34]['$class'] = plistlib.UID(creationDate + 9)
+        plist['$objects'][start_index + 34]['lineStyle2'] = plistlib.UID(creationDate + 4)
+        plist['$objects'][start_index + 34]['paperIdentifier'] = plistlib.UID(creationDate + 5)
+        plist['$objects'][start_index + 34]['paperOrientation'] = plistlib.UID(creationDate + 7)
+        plist['$objects'][start_index + 34]['paperSize'] = plistlib.UID(creationDate + 6)
+        plist['$objects'][start_index + 34]['paperSizingBehavior'] = plistlib.UID(creationDate + 8)
 
         # clear objects array before adding new ones in:
-        plist['$objects'][65]['NS.objects'] = [None] * page_count
+        plist['$objects'][start_index + 41]['NS.objects'] = [None] * page_count
 
         for i in range(page_count):
             if i == 0:
-                plist['$objects'][65]['NS.objects'][i] = plistlib.UID(creationDate + 11)
+                plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11)
             elif i == 1:
-                plist['$objects'][65]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7)
+                plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7)
             else:
-                plist['$objects'][65]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7 + ((i - 2) * 6))
+                plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7 + ((i - 2) * 6))
 
 
-        plist['$objects'][66]['$class'] = plistlib.UID(creationDate + 17)
-        plist['$objects'][66]['NS.keys'][0] = plistlib.UID(creationDate + 12)
-        plist['$objects'][66]['NS.keys'][1] = plistlib.UID(creationDate + 13)
-        plist['$objects'][66]['NS.keys'][2] = plistlib.UID(creationDate + 14)
-        plist['$objects'][66]['NS.keys'][3] = plistlib.UID(creationDate + 15)
-        plist['$objects'][66]['NS.keys'][4] = plistlib.UID(creationDate + 16)
+        plist['$objects'][start_index + 42]['$class'] = plistlib.UID(creationDate + 17)
+        plist['$objects'][start_index + 42]['NS.keys'][0] = plistlib.UID(creationDate + 12)
+        plist['$objects'][start_index + 42]['NS.keys'][1] = plistlib.UID(creationDate + 13)
+        plist['$objects'][start_index + 42]['NS.keys'][2] = plistlib.UID(creationDate + 14)
+        plist['$objects'][start_index + 42]['NS.keys'][3] = plistlib.UID(creationDate + 15)
+        plist['$objects'][start_index + 42]['NS.keys'][4] = plistlib.UID(creationDate + 16)
 
-        for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
-            plist['$objects'].pop(73)
+        if (page_count == 1):
+            for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
+                plist['$objects'].pop(start_index + 49)
+        else:
+            deletion_cnt = (reference_page_count - page_count) * 6 + 2
+            for i in range(2, deletion_cnt, 1):
+                plist['$objects'].pop((start_index + 49 + deletion_cnt) - i)
 
-        plist['$objects'][77]['$class'] = plistlib.UID(object_1_class - 2)
+        if page_count == 1:
+            plist['$objects'][start_index + 53]['$class'] = plistlib.UID(object_1_class - 2)
+        else:
+            plist['$objects'][start_index + 61]['$class'] = plistlib.UID(object_1_class - 2)
 
         with open(plist_file_path, 'wb') as f:
             plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
