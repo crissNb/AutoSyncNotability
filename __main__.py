@@ -1,6 +1,7 @@
 import sys
 import re
 import socket
+import time
 from src.pdfconverter import PDFConverter, shutil
 from src.configreader import ConfigReader
 from src.syncer import Syncer
@@ -129,10 +130,21 @@ while (True):
                                 config['AUTH']['dump_folder'],
                                 config['AUTH']['destination_name'], 
                                 converted_file_name, 
-                                ).sync(changed)
+                                )
+                try:
+                    syncer.sync(changed)
+                except Exception as e:
+                    shutil.rmtree(converted_file_name)
+
+                    # add file back to queue
+                    files_queue[pdf_file_path] = changed
+                    print("job failed; continuing in 5")
+                    time.sleep(5)
+                    break
 
                 shutil.rmtree(converted_file_name)
                 print("finished job: " + converted_file_name)
+                time.sleep(1)
                 break
             print("skipping: " + pdf_file_name)
     client_socket.close()
