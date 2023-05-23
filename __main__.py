@@ -2,7 +2,7 @@ import sys
 import re
 import socket
 import time
-import asyncio
+import threading
 from src.pdfconverter import PDFConverter, shutil
 from src.configreader import ConfigReader
 from src.syncer import Syncer
@@ -10,6 +10,10 @@ from pathlib import Path
 from icloudpy import ICloudPyService
 
 files_queue = {}
+
+# Create a server socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind(('localhost', 8000))
 
 def queue_file(data):
     # data has a format of PDF_FILE_PATH:::CHANGED;;;PDF_FILE_PATH:::CHANGED (CHANGED is a boolean)
@@ -27,31 +31,22 @@ def queue_file(data):
         changed = splited[1]
         files_queue[file_data] = changed
 
-async def handle_client(client_socket):
-    # Receive data from client
-    data = client_socket.recv(4096).decode('utf-8')
-
-    queue_file(data)
-
-    client_socket.send(b'Received data')
-    client_socket.close()
-
-async def listen_for_connections():
-    # Create a server socket
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 8000))
-
-    # Listen for incoming connections
-    server_socket.listen()
-
-    print("Listening...")
-
+def listen_for_files():
     while True:
-        # Wait for a connection
-        client_socket, addr = await loop.sock_accept(server_socket)
+        # Listen for incoming connections
+        server_socket.listen()
+        print("Listening for connection...")
 
-        # Handle the client connection asynchronously
-        asyncio.create_task(handle_client(client_socket))
+        client_socket, addr = server_socket.accept()
+
+        # Receive data from client
+        data = client_socket.recv(4096).decode('utf-8')
+
+        queue_file(data)
+
+        print("Received data: " + data)
+        client_socket.send(b'Received data')
+        client_socket.close()
 
 config = ConfigReader().load_config()
 
@@ -96,21 +91,27 @@ elif api.requires_2sa:
 
 api.drive.params["clientId"] = api.client_id
 
+# Start the thread to handle incoming connections
+threading.Thread(target=listen_for_files).start()
 
-loop = asyncio.get_event_loop()
-loop.create_task(listen_for_connections())
-loop.run_forever()
-
+# Main loop
 while (True):
     if len(files_queue) == 0:
         # periodically check for files that are uploaded to icloud
         print("Checking for files...")
         files = api.drive[config['AUTH']['dump_folder']].dir()
+        print(files)
         for file in files:
             # check if file has an nbn extension
-            if file.name.endswith('.nbn'):
+            if file.endswith('.nbn'):
+                print(file)
                 # move the file to the correct location
-                api.drive[config['AUTH']['dump_folder']][file.name].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
+                api.drive[config['AUTH']['dump_folder']][file].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
+
+                # remove .nbn from the file
+                file = file[:-4]
+
+                api.drive[config['AUTH']['dump_folder']][file].delete()
         
         time.sleep(5)
     elif len(files_queue) > 0:

@@ -12,7 +12,7 @@ class TestSync (unittest.TestCase):
         file_path = os.path.join(os.path.dirname(__file__), 'data', 'LoremIpsum1.pdf')
 
         # format the data:
-        encoded_data = file_path + ":::" + str(False) + ";;;" + file_path + ":::" + str(False) +";;;"
+        encoded_data = file_path + ":::" + str(False) + ";;;"
 
         self.client_socket.send(encoded_data.encode('utf-8'))
 
@@ -27,7 +27,7 @@ class TestSync (unittest.TestCase):
         file_path = os.path.join(os.path.dirname(__file__), 'data', 'LoremIpsum2.pdf')
 
         # format the data:
-        encoded_data = file_path + ":::" + str(False) + ";;;" + file_path + ":::" + str(False) +";;;"
+        encoded_data = file_path + ":::" + str(False) + ";;;"
 
         self.client_socket.send(encoded_data.encode('utf-8'))
 
@@ -42,7 +42,7 @@ class TestSync (unittest.TestCase):
         file_path = os.path.join(os.path.dirname(__file__), 'data', 'LoremIpsum3.pdf')
 
         # format the data:
-        encoded_data = file_path + ":::" + str(False) + ";;;" + file_path + ":::" + str(False) +";;;"
+        encoded_data = file_path + ":::" + str(False) + ";;;"
 
         self.client_socket.send(encoded_data.encode('utf-8'))
 
@@ -57,7 +57,7 @@ class TestSync (unittest.TestCase):
         file_path = os.path.join(os.path.dirname(__file__), 'data', 'LoremIpsum24.pdf')
 
         # format the data:
-        encoded_data = file_path + ":::" + str(False) + ";;;" + file_path + ":::" + str(False) +";;;"
+        encoded_data = file_path + ":::" + str(False) + ";;;"
 
         self.client_socket.send(encoded_data.encode('utf-8'))
 

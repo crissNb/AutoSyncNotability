@@ -168,6 +168,8 @@ class PDFConverter:
         plist['$objects'][start_index + 26]['$class'] = plistlib.UID(object_3_class + 14)
         plist['$objects'][start_index + 27]['$class'] = plistlib.UID(object_3_class - 3)
 
+        plist['$objects'][start_index + 30] = self.pdf_file_name
+
         plist['$objects'][start_index + 31]['$class'] = plistlib.UID(creationDate + 1)
 
         plist['$objects'][start_index + 33]['$class'] = plistlib.UID(object_1_class - 7)
@@ -203,9 +205,6 @@ class PDFConverter:
         if (page_count == 1):
             for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
                 plist['$objects'].pop(start_index + 49)
-        elif (page_count == 2):
-            for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
-                plist['$objects'].pop(start_index + 49)
         else:
             deletion_cnt = (reference_page_count - page_count) * 6 + 1
             old_start_index = start_index
@@ -214,9 +213,6 @@ class PDFConverter:
                 plist['$objects'].pop(start_index)
             plist['$objects'].pop(start_index - 1)
 
-            with open(plist_file_path, 'wb') as f:
-                plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
-
             # update data accordingly
             last_page_number = creationDate + 19
             for i in range(1, page_count):
@@ -224,8 +220,6 @@ class PDFConverter:
                 plist['$objects'][old_start_index + 49 + ((i - 1) * 6)]['$class'] = plistlib.UID(page_class_id)
 
                 for j in range(5):
-                    if i == 2:
-                        print(last_page_number)
                     plist['$objects'][old_start_index + 49 + ((i - 1) * 6)]['NS.keys'][j] = plistlib.UID(last_page_number)
                     last_page_number += 1
                 if i == 0:
@@ -233,8 +227,11 @@ class PDFConverter:
                 else:
                     last_page_number += 1
 
+        with open(plist_file_path, 'wb') as f:
+            plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
+
         if page_count == 1:
-            plist['$objects'][start_index - 2]['$class'] = plistlib.UID(object_1_class - 2)
+            plist['$objects'][start_index + 53]['$class'] = plistlib.UID(object_1_class - 2)
         else:
             plist['$objects'][start_index + 4]['$class'] = plistlib.UID(object_1_class - 2)
 

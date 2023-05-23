@@ -32,7 +32,6 @@ class Syncer:
         print("uploading done")
 
     def attempt_upload(self, target_file_location, destination_file_location):
-        # self.drive[self.dump_folder][self.target_path].update_data()
         try:
             with open(target_file_location, 'rb') as f:
                 if destination_file_location == self.target_path:
