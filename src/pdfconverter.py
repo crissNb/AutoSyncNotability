@@ -1,26 +1,30 @@
 import os
 import shutil
 import PyPDF2
-from distutils.dir_util import copy_tree
 import plistlib
 
 class PDFConverter:
-    def __init__(self, pdf_file_path, reference_path):
+    def __init__(self, pdf_file_path, reference_path, pdf_file_name):
         self.reference_path = reference_path
         self.pdf_file_path = pdf_file_path
 
+        if pdf_file_name.endswith('.pdf'):
+            self.pdf_file_name = 'converted_' + pdf_file_name[:-4]
+        else:
+            self.pdf_file_name = 'converted_' + pdf_file_name
+
     def convert(self):
         # make own copy of reference folder in current working directory in a folder
-        copy_tree(self.reference_path, 'converted')
+        shutil.copytree(self.reference_path, self.pdf_file_name)
 
-        pdf_file_name = os.listdir('converted/PDFs')[0]
+        pdf_file_name = os.listdir(os.path.join(self.pdf_file_name, 'PDFs'))[0]
 
-        reference_pdf_file = open(os.path.join('converted/PDFs', pdf_file_name), 'rb')
+        reference_pdf_file = open(os.path.join(self.pdf_file_name, 'PDFs', pdf_file_name), 'rb')
         referece_pdf_reader = PyPDF2.PdfReader(reference_pdf_file)
         reference_page_count = len(referece_pdf_reader.pages)
         reference_pdf_file.close()
 
-        shutil.copyfile(self.pdf_file_path, os.path.join('converted/PDFs', pdf_file_name))
+        shutil.copyfile(self.pdf_file_path, os.path.join(self.pdf_file_name, 'PDFs', pdf_file_name))
 
         # get number of pages in pdf
         pdf_file = open(self.pdf_file_path, 'rb')
@@ -36,13 +40,13 @@ class PDFConverter:
             print("this aint gonna work :(")
             return
 
-        plist_file_path = os.path.join('converted', 'Session.plist')
+        plist_file_path = os.path.join(self.pdf_file_name, 'Session.plist')
         with open(plist_file_path, 'rb') as f:
             plist = plistlib.load(f, fmt=plistlib.FMT_BINARY)
 
         if page_count >= 3:
-            object_1_class = 91 + 13 * (page_count - 2)
-            creationDate = 60 + 7 * (page_count - 2)
+            object_1_class = 91 + 13 * (page_count - 2) + 1
+            creationDate = 60 + 7 * (page_count - 2) + 1
             object_2_class = 58 + 7 * (page_count - 2)
         elif page_count == 2:
             object_1_class = 92
@@ -106,14 +110,11 @@ class PDFConverter:
             plist['$objects'].pop(29)
         else:
             deletion_cnt = (reference_page_count - page_count) * 7 + 1
-            start_index = 37
+            start_index = 30 + (page_count - 2) * 7
 
-            for i in range(2, deletion_cnt, 1):
-                plist['$objects'].pop((36 + deletion_cnt) - i)
-            plist['$objects'].pop(36)
-
-        with open(plist_file_path, 'wb') as f:
-            plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
+            for i in range(2, deletion_cnt):
+                plist['$objects'].pop(start_index)
+            plist['$objects'].pop(start_index - 1)
 
         object_3_class = object_2_class - 26
         plist['$objects'][start_index]['$class'] = plistlib.UID(object_3_class)
@@ -202,15 +203,40 @@ class PDFConverter:
         if (page_count == 1):
             for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
                 plist['$objects'].pop(start_index + 49)
+        elif (page_count == 2):
+            for i in range((reference_page_count - page_count) * 6 + 2, 2, -1):
+                plist['$objects'].pop(start_index + 49)
         else:
-            deletion_cnt = (reference_page_count - page_count) * 6 + 2
-            for i in range(2, deletion_cnt, 1):
-                plist['$objects'].pop((start_index + 49 + deletion_cnt) - i)
+            deletion_cnt = (reference_page_count - page_count) * 6 + 1
+            old_start_index = start_index
+            start_index += 55 + ((page_count - 2) * 6)
+            for i in range(2, deletion_cnt):
+                plist['$objects'].pop(start_index)
+            plist['$objects'].pop(start_index - 1)
+
+            with open(plist_file_path, 'wb') as f:
+                plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
+
+            # update data accordingly
+            last_page_number = creationDate + 19
+            for i in range(1, page_count):
+                page_class_id = creationDate + 17
+                plist['$objects'][old_start_index + 49 + ((i - 1) * 6)]['$class'] = plistlib.UID(page_class_id)
+
+                for j in range(5):
+                    if i == 2:
+                        print(last_page_number)
+                    plist['$objects'][old_start_index + 49 + ((i - 1) * 6)]['NS.keys'][j] = plistlib.UID(last_page_number)
+                    last_page_number += 1
+                if i == 0:
+                    last_page_number += 2
+                else:
+                    last_page_number += 1
 
         if page_count == 1:
-            plist['$objects'][start_index + 53]['$class'] = plistlib.UID(object_1_class - 2)
+            plist['$objects'][start_index - 2]['$class'] = plistlib.UID(object_1_class - 2)
         else:
-            plist['$objects'][start_index + 61]['$class'] = plistlib.UID(object_1_class - 2)
+            plist['$objects'][start_index + 4]['$class'] = plistlib.UID(object_1_class - 2)
 
         with open(plist_file_path, 'wb') as f:
             plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)

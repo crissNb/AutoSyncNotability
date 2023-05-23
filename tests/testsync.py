@@ -52,5 +52,20 @@ class TestSync (unittest.TestCase):
         # check if the data is correct
         self.assertEqual(data, "Received data")
 
+    def test_sync_large_unchanged(self):
+        # get absolute path of LoremIpsum.pdf in data/ directory
+        file_path = os.path.join(os.path.dirname(__file__), 'data', 'LoremIpsum24.pdf')
+
+        # format the data:
+        encoded_data = file_path + ":::" + str(False) + ";;;" + file_path + ":::" + str(False) +";;;"
+
+        self.client_socket.send(encoded_data.encode('utf-8'))
+
+        # receive the data from the server
+        data = self.client_socket.recv(1024).decode('utf-8')
+
+        # check if the data is correct
+        self.assertEqual(data, "Received data")
+
 if __name__ == '__main__':
     unittest.main()

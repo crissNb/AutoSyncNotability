@@ -2,6 +2,7 @@ import sys
 import re
 import socket
 import time
+import asyncio
 from src.pdfconverter import PDFConverter, shutil
 from src.configreader import ConfigReader
 from src.syncer import Syncer
@@ -25,6 +26,32 @@ def queue_file(data):
         file_data = splited[0]
         changed = splited[1]
         files_queue[file_data] = changed
+
+async def handle_client(client_socket):
+    # Receive data from client
+    data = client_socket.recv(4096).decode('utf-8')
+
+    queue_file(data)
+
+    client_socket.send(b'Received data')
+    client_socket.close()
+
+async def listen_for_connections():
+    # Create a server socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(('localhost', 8000))
+
+    # Listen for incoming connections
+    server_socket.listen()
+
+    print("Listening...")
+
+    while True:
+        # Wait for a connection
+        client_socket, addr = await loop.sock_accept(server_socket)
+
+        # Handle the client connection asynchronously
+        asyncio.create_task(handle_client(client_socket))
 
 config = ConfigReader().load_config()
 
@@ -69,31 +96,24 @@ elif api.requires_2sa:
 
 api.drive.params["clientId"] = api.client_id
 
-# Create a socket object
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Bind the socket to a specific address and port
-server_socket.bind(('localhost', 8000))
-
-print("Server started on localhost:8000")
+loop = asyncio.get_event_loop()
+loop.create_task(listen_for_connections())
+loop.run_forever()
 
 while (True):
-    # Listen for incoming connections
-    server_socket.listen()
-
-    print("Listening...")
-
-    # Wait for a connection
-    client_socket, addr = server_socket.accept()
-
-    # Receive data from client
-    data = client_socket.recv(4096).decode('utf-8')
-
-    queue_file(data)
-
-    client_socket.send(b'Received data')
-
-    if len(files_queue) > 0:
+    if len(files_queue) == 0:
+        # periodically check for files that are uploaded to icloud
+        print("Checking for files...")
+        files = api.drive[config['AUTH']['dump_folder']].dir()
+        for file in files:
+            # check if file has an nbn extension
+            if file.name.endswith('.nbn'):
+                # move the file to the correct location
+                api.drive[config['AUTH']['dump_folder']][file.name].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
+        
+        time.sleep(5)
+    elif len(files_queue) > 0:
         # get first file in queue
         pdf_file_path, changed = files_queue.popitem()
         pdf_file_name = pdf_file_path.split('/')[-1]
@@ -112,18 +132,18 @@ while (True):
 
                 print("Now handling: " + pdf_file_name)
 
-                pdfconverter = PDFConverter(pdf_file_path, config[section]['reference_path'])
+                pdfconverter = PDFConverter(pdf_file_path, config[section]['reference_path'], pdf_file_name)
                 pdfconverter.convert()
 
                 # check if pdfconverter converted by checking if the file exists
-                if not Path('converted').is_dir():
+
+                # remove .pdf from pdf_file_name
+                pdf_file_name = pdf_file_name[:-4]
+                converted_file_name = 'converted_' + pdf_file_name
+
+                if not Path(converted_file_name).is_dir():
                     print("PDFConverter failed to convert!")
                     break
-
-                # rename converted file to pdf_file_name + ".nbn"
-                # remove pdf extension and add .nbn extension
-                converted_file_name = pdf_file_name.split('.')[0]
-                Path('converted').rename(converted_file_name)
 
                 # sync converted file
                 syncer = Syncer(api.drive, 
@@ -138,6 +158,7 @@ while (True):
 
                     # add file back to queue
                     files_queue[pdf_file_path] = changed
+                    print(e)
                     print("job failed; continuing in 5")
                     time.sleep(5)
                     break
@@ -147,4 +168,3 @@ while (True):
                 time.sleep(1)
                 break
             print("skipping: " + pdf_file_name)
-    client_socket.close()
