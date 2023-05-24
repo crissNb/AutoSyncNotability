@@ -40,7 +40,7 @@ def listen_for_files():
         client_socket, addr = server_socket.accept()
 
         # Receive data from client
-        data = client_socket.recv(4096).decode('utf-8')
+        data = client_socket.recv(8192).decode('utf-8')
 
         queue_file(data)
 
