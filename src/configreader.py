@@ -17,6 +17,7 @@ class ConfigReader:
             config['DEFAULT'] = {
                 'regex_match': '',
                 'reference_path': '',
+                'working_dir': '',
             }
 
             # create new folder for config file

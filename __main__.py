@@ -1,3 +1,4 @@
+import os
 import sys
 import re
 import socket
@@ -130,6 +131,8 @@ while (True):
                 if not Path(config[section]['reference_path']).expanduser().is_dir():
                     print("reference path for " + section + " is invalid!")
                     break
+
+                pdf_file_path = os.path.join(config[section]['working_dir'], pdf_file_path)
 
                 print("Now handling: " + pdf_file_name)
 
