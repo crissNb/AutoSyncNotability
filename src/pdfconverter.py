@@ -13,6 +13,11 @@ class PDFConverter:
         else:
             self.pdf_file_name = 'converted_' + pdf_file_name
 
+    # generate unique uuid
+    def generateUUID(self):
+        import uuid
+        return str(uuid.uuid4()).upper()
+
     def convert(self):
         # make own copy of reference folder in current working directory in a folder
         shutil.copytree(self.reference_path, self.pdf_file_name)
@@ -34,6 +39,18 @@ class PDFConverter:
 
         # update plist file
         self.updatePlist(page_count, reference_page_count)
+
+        # update metadata file
+        self.updateMetaData()
+
+    def updateMetaData(self):
+        with open(os.path.join(self.pdf_file_name, 'metadata.plist'), 'rb') as f:
+            plist = plistlib.load(f, fmt=plistlib.FMT_BINARY)
+
+        uuid = self.generateUUID()
+        plist['$objects'][16] = self.pdf_file_name
+        plist['$objects'][18] = self.pdf_file_name
+        plist['$objects'][21] = uuid
 
     def updatePlist(self, page_count, reference_page_count):
         if page_count > reference_page_count:
