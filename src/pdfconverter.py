@@ -41,7 +41,7 @@ class PDFConverter:
         self.updatePlist(page_count, reference_page_count)
 
         # update metadata file
-        # self.updateMetaData()
+        self.updateMetaData()
 
     def updateMetaData(self):
         with open(os.path.join(self.pdf_file_name, 'metadata.plist'), 'rb') as f:
@@ -228,7 +228,7 @@ class PDFConverter:
         else:
             deletion_cnt = (reference_page_count - page_count) * 6 + 1
             old_start_index = start_index
-            start_index += 55 + ((page_count - 2) * 6)
+            start_index += 56 + ((page_count - 2) * 6)
             for i in range(2, deletion_cnt):
                 plist['$objects'].pop(start_index)
             plist['$objects'].pop(start_index - 1)
@@ -253,7 +253,7 @@ class PDFConverter:
         if page_count == 1:
             plist['$objects'][start_index + 53]['$class'] = plistlib.UID(object_1_class - 2)
         else:
-            plist['$objects'][start_index + 4]['$class'] = plistlib.UID(object_1_class - 2)
+            plist['$objects'][start_index + 3]['$class'] = plistlib.UID(object_1_class - 2)
 
         with open(plist_file_path, 'wb') as f:
             plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
