@@ -41,16 +41,19 @@ class PDFConverter:
         self.updatePlist(page_count, reference_page_count)
 
         # update metadata file
-        self.updateMetaData()
+        # self.updateMetaData()
 
     def updateMetaData(self):
         with open(os.path.join(self.pdf_file_name, 'metadata.plist'), 'rb') as f:
             plist = plistlib.load(f, fmt=plistlib.FMT_BINARY)
 
         uuid = self.generateUUID()
-        plist['$objects'][16] = self.pdf_file_name
-        plist['$objects'][18] = self.pdf_file_name
-        plist['$objects'][21] = uuid
+        plist['$objects'][14] = self.pdf_file_name
+        plist['$objects'][15] = self.pdf_file_name
+        plist['$objects'][19] = uuid
+
+        with open(os.path.join(self.pdf_file_name, 'metadata.plist'), 'wb') as f:
+            plistlib.dump(plist, f, fmt=plistlib.FMT_BINARY)
 
     def updatePlist(self, page_count, reference_page_count):
         if page_count > reference_page_count:

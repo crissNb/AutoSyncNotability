@@ -112,6 +112,9 @@ while (True):
                 # remove .nbn from the file
                 file = file[:-4]
 
+                # add .zip to the file
+                file = file + ".zip"
+
                 api.drive[config['AUTH']['dump_folder']][file].delete()
         
         time.sleep(5)
@@ -149,16 +152,23 @@ while (True):
                     print("PDFConverter failed to convert!")
                     break
 
+                # create zip file of converted file
+                shutil.make_archive(converted_file_name, 'zip', converted_file_name)
+
+                # delete original
+                shutil.rmtree(converted_file_name)
+
                 # sync converted file
                 syncer = Syncer(api.drive, 
                                 config['AUTH']['dump_folder'],
                                 config['AUTH']['destination_name'], 
-                                converted_file_name, 
+                                converted_file_name + ".zip",
                                 )
                 try:
                     syncer.sync(changed)
                 except Exception as e:
-                    shutil.rmtree(converted_file_name)
+                    # remove zip file
+                    os.remove(converted_file_name + ".zip")
 
                     # add file back to queue
                     files_queue[pdf_file_path] = changed
@@ -167,7 +177,9 @@ while (True):
                     time.sleep(5)
                     break
 
-                shutil.rmtree(converted_file_name)
+                # remove zip file
+                os.remove(converted_file_name + ".zip")
+
                 print("finished job: " + converted_file_name)
                 time.sleep(1)
                 break
