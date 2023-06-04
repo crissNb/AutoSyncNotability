@@ -24,6 +24,10 @@ class PDFConverter:
 
         pdf_file_name = os.listdir(os.path.join(self.pdf_file_name, 'PDFs'))[0]
 
+        # if pdf_file_name starts with a dot, remove it
+        if pdf_file_name.startswith('.'):
+            pdf_file_name = pdf_file_name[1:]
+
         reference_pdf_file = open(os.path.join(self.pdf_file_name, 'PDFs', pdf_file_name), 'rb')
         referece_pdf_reader = PyPDF2.PdfReader(reference_pdf_file)
         reference_page_count = len(referece_pdf_reader.pages)
