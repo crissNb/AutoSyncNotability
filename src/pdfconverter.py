@@ -9,9 +9,9 @@ class PDFConverter:
         self.pdf_file_path = pdf_file_path
 
         if pdf_file_name.endswith('.pdf'):
-            self.pdf_file_name = 'converted_' + pdf_file_name[:-4]
+            self.pdf_file_name = pdf_file_name[:-4]
         else:
-            self.pdf_file_name = 'converted_' + pdf_file_name
+            self.pdf_file_name = pdf_file_name
 
     # generate unique uuid
     def generateUUID(self):

@@ -146,7 +146,7 @@ while (True):
 
                 # remove .pdf from pdf_file_name
                 pdf_file_name = pdf_file_name[:-4]
-                converted_file_name = 'converted_' + pdf_file_name
+                converted_file_name = pdf_file_name
 
                 if not Path(converted_file_name).is_dir():
                     print("PDFConverter failed to convert!")
