@@ -216,7 +216,7 @@ class PDFConverter:
             elif i == 1:
                 plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7)
             else:
-                plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7 + ((i - 2) * 6))
+                plist['$objects'][start_index + 41]['NS.objects'][i] = plistlib.UID(creationDate + 11 + 7 + ((i - 1) * 6))
 
 
         plist['$objects'][start_index + 42]['$class'] = plistlib.UID(creationDate + 17)
