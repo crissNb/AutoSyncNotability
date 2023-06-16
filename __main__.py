@@ -121,7 +121,7 @@ while (True):
                     api.drive[config['AUTH']['dump_folder']].mkdir(file + "buf")
                     break;
         
-        time.sleep(5)
+        time.sleep(20)
     elif len(files_queue) > 0:
         # get first file in queue
         pdf_file_path, changed = files_queue.popitem()
