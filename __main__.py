@@ -118,6 +118,7 @@ while (True):
                 try:
                     api.drive[config['AUTH']['dump_folder']][file].delete()
                 except Exception as e:
+                    api.drive[config['AUTH']['dump_folder']].mkdir(file + "buf")
                     break;
         
         time.sleep(5)
