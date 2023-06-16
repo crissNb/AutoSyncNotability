@@ -115,7 +115,10 @@ while (True):
                 # add .zip to the file
                 file = file + ".zip"
 
-                api.drive[config['AUTH']['dump_folder']][file].delete()
+                try:
+                    api.drive[config['AUTH']['dump_folder']][file].delete()
+                except Exception as e:
+                    break;
         
         time.sleep(5)
     elif len(files_queue) > 0:
