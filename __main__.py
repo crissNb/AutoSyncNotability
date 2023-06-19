@@ -100,28 +100,32 @@ while (True):
     if len(files_queue) == 0:
         # periodically check for files that are uploaded to icloud
         print("Checking for files...")
-        files = api.drive[config['AUTH']['dump_folder']].dir()
-        print(files)
-        for file in files:
-            # check if file has an nbn extension
-            if file.endswith('.nbn'):
-                print(file)
-                # move the file to the correct location
-                api.drive[config['AUTH']['dump_folder']][file].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
+        try:
+            files = api.drive[config['AUTH']['dump_folder']].dir()
+            print(files)
+            for file in files:
+                # check if file has an nbn extension
+                if file.endswith('.nbn'):
+                    print(file)
+                    # move the file to the correct location
+                    api.drive[config['AUTH']['dump_folder']][file].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
 
-                # remove .nbn from the file
-                file = file[:-4]
+                    # remove .nbn from the file
+                    file = file[:-4]
 
-                # add .zip to the file
-                file = file + ".zip"
+                    # add .zip to the file
+                    file = file + ".zip"
 
-                try:
-                    api.drive[config['AUTH']['dump_folder']][file].delete()
-                except Exception as e:
-                    api.drive[config['AUTH']['dump_folder']].mkdir(file + "buf")
-                    break;
+                    try:
+                        api.drive[config['AUTH']['dump_folder']][file].delete()
+                    except Exception as e:
+                        api.drive[config['AUTH']['dump_folder']].mkdir(file + "buf")
+                        break;
+        except Exception as e:
+            print(e)
+            break;
         
-        time.sleep(20)
+        time.sleep(50)
     elif len(files_queue) > 0:
         # get first file in queue
         pdf_file_path, changed = files_queue.popitem()
