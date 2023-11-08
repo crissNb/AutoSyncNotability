@@ -108,7 +108,7 @@ while (True):
                 if file.endswith('.nbn'):
                     print(file)
                     # move the file to the correct location
-                    api.drive[config['AUTH']['dump_folder']][file].move("FOLDER::" + config['AUTH']['destination_name'] + "::documents")
+                    api.drive[config['AUTH']['dump_folder']][file].move("FOLDER::" + config['AUTH']['destination_name'] + "::Documents")
 
                     # remove .nbn from the file
                     file = file[:-4]
@@ -119,6 +119,7 @@ while (True):
                     try:
                         api.drive[config['AUTH']['dump_folder']][file].delete()
                     except Exception as e:
+                        print(e)
                         api.drive[config['AUTH']['dump_folder']].mkdir(file + "buf")
                         break;
         except Exception as e:
