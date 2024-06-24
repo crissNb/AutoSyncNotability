@@ -1,6 +1,6 @@
 # AutoSyncNotability
 
-# I'M NOT RESPONSIBLE FOR ANY DAMAGE/LOSS OF YOUR NOTABILITY FILES! This program is primarily made just for me, I cannot gauarentee it will work for an average joe
+# I'M NOT RESPONSIBLE FOR ANY DAMAGE/LOSS OF YOUR NOTABILITY FILES! This program is primarily made just for me, I cannot guarentee it will work for an average joe
 
 This project is a heavily hard coded hack designed to automatically sync PDF files to Notability. In other words, this program automatically converts a given PDF file (or files) to Notability format and imports it into Notability.
 Works on all operating systems (including Linux) and doesn't deserialize NSKeyedArchive encoded files; instead, it directly modifies them (which is why it works on all operating systems).
